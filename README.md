@@ -550,6 +550,3 @@ Toda la documentación detallada está en la carpeta `docs/`:
 ## 📄 Licencia
 
 Proyecto privado — Uso interno de Serviteca SAS.
-=======
-
->>>>>>> a62cdce976901caa50c4c4a79c056b3c513e1f86
