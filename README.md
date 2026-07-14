@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🚗 Serviteca SAS — Sistema de Gestión para Taller Automotriz
 
 Sistema moderno, rápido, seguro y mantenible para la administración completa de una serviteca (taller automotriz). Incluye gestión de clientes, vehículos, órdenes de trabajo, inventario, facturación y más. Construido con una arquitectura modular y escalable que permite evolucionar hacia múltiples sedes o multiempresa en futuras versiones.
@@ -550,3 +551,6 @@ Toda la documentación detallada está en la carpeta `docs/`:
 ## 📄 Licencia
 
 Proyecto privado — Uso interno de Serviteca SAS.
+=======
+
+>>>>>>> a62cdce976901caa50c4c4a79c056b3c513e1f86
