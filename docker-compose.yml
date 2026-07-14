@@ -1,0 +1,74 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: serviteca-db
+    environment:
+      POSTGRES_DB: serviteca
+      POSTGRES_USER: serviteca
+      POSTGRES_PASSWORD: serviteca123
+    # ports quitado porque PostgreSQL nativo de Windows ocupa 5432
+    # Los containers se comunican por red interna Docker (postgres:5432)
+    expose:
+      - "5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U serviteca -d serviteca"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: serviteca-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@serviteca.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+    ports:
+      - "5050:80"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: serviteca-backend
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/serviteca
+      DB_USERNAME: serviteca
+      DB_PASSWORD: serviteca123
+      JWT_SECRET: 4a6f5a71586a356c6f62444c396d75526d466c3447314c376a355733696546325a386e356b356c4d346133553d
+      JWT_EXPIRATION_MS: "3600000"
+      JWT_REFRESH_EXPIRATION_MS: "86400000"
+      SPRING_PROFILES_ACTIVE: prod
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: serviteca-frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
